@@ -1,16 +1,21 @@
-# Setup v2lsrc module
+# Nano Vision by Forzaclaudio
 
-Taken from https://www.dev47apps.com/droidcam/linux/
+This is a collection of Machine Vision tasks available on the Nvidia Jetson Nano board. It uses droidcam to collect the video that is processed by this repo.
 
-- Close any programs using the droidcam webcam. Unload the driver:
-```bash
-sudo rmmod v4l2loopback_dc
+## How to use
+Access to all the utilities from this module can be accessed as follows:
+
+```python
+import nano_vision
 ```
+instantiate the classes relevant for your machine vision tasks.
 
-2. Re-load it with new options (WIDTH and HEIGHT are numbers). :
-
-```bash
-sudo insmod /lib/modules/`uname -r`/kernel/drivers/media/video/v4l2loopback-dc.ko width=WIDTH height=HEIGHT
+## How to install
+To install using pip run the following command
 ```
-
-Standard sizes (Width x Height): 640×480, 960×720, 1280×720 (720p), 1920×1080 (1080p).
+pip install .
+```
+to install for development do the following:
+```
+pip install . -e
+```
