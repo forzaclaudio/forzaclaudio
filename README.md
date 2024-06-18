@@ -19,3 +19,17 @@ to install for development do the following:
 ```
 pip install . -e
 ```
+
+
+## Links and references
+- https://hizzely.hashnode.dev/instalasi-droidcam-cli-di-jetson-nano
+
+- https://www.dev47apps.com/droidcam/linux/
+
+- https://docs.nvidia.com/jetson/archives/r35.4.1/DeveloperGuide/text/SD/Multimedia/AcceleratedGstreamer.html
+
+- https://stackoverflow.com/questions/21152303/how-to-use-gstreamer-to-save-webcam-video-to-file
+
+- https://developer.ridgerun.com/wiki/index.php/How_to_Capture_Frames_from_Camera_with_OpenCV_in_Python
+
+- https://github.com/miooochi/face_recognizer

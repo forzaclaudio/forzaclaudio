@@ -8,7 +8,7 @@ cap = cv2.VideoCapture(0)
 if not (cap.isOpened()):
     print("Could not open video device")
 screen = Screen()
-screen.set_resolution(2)
+screen.set_resolution(1)
 overlay = Overlays()
 print("Setting resolution to {0}x{1}".format(screen.width, screen.height))
 

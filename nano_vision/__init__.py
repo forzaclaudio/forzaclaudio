@@ -2,7 +2,10 @@ import logging
 import os
 
 logging.basicConfig()
+logging.root.setLevel(logging.NOTSET)
+
 logger = logging.getLogger(__name__)
+
 level = os.getenv("LOG_LEVEL")
 if level:
     if level.lower() == 'info':
@@ -16,4 +19,4 @@ else:
 
 from .display import Overlays
 from .display import Screen
-
+from .machine_learning import read_face_data
