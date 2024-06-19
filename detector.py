@@ -45,7 +45,5 @@ def face_detector(trained_datapath):
     if cv2.waitKey(0) == ord('q'):
         cv2.destroyAllWindows()
 
-
-
 if __name__ == "__main__":
     face_detector("train.pkl")

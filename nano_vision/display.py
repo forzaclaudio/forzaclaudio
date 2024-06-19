@@ -103,6 +103,7 @@ class Screen:
             self.width = 1920
             self.height = 1080
             return
+        raise ValueError("{0} is not a valid resolution code".format(new_resolution))
 
     @property
     def width(self):
@@ -112,7 +113,7 @@ class Screen:
     @width.setter
     def width(self, value):
         logger.debug("Setting width to: {}".format(value))
-        if value > 640 and value < 1920:
+        if value < 640 and value > 1920:
             raise ValueError("Width must be between 640 and 1920 px.")
         self._width = value
 
@@ -124,6 +125,6 @@ class Screen:
     @height.setter
     def height(self, value):
         logger.debug("Setting height to: {}".format(value))
-        if value > 640 and value < 1920:
+        if value < 480 and value > 1920:
             raise ValueError("Width must be between 480 and 1080 px.")
         self._height = value
