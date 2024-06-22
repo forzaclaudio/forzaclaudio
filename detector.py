@@ -1,5 +1,4 @@
 import logging
-import pickle
 import sys
 
 import cv2

@@ -1,5 +1,4 @@
 import cv2
-import sys
 import logging
 
 from nano_vision import Screen, Video
@@ -14,7 +13,7 @@ screen.set_resolution(res_code)
 cap = cv2.VideoCapture(0)
 if not (cap.isOpened()):
     logger.error("Could not open video device e.g. /dev/video0")
-    exit(0)
+    exit(1)
 
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, screen.width)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, screen.height)

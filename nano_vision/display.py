@@ -67,6 +67,11 @@ class Overlays:
         return cv2.add(img1_bg, img2_fg)
 
     def fps(self, frame, fps = 0):
+        """
+        Collect fps by executing the following:
+        timer = cv2.getTickCount()
+        fps = cv2.getTickFrequency() / (cv2.getTickCount() - timer)
+        """
         text = "FPS: {0}".format(str(int(fps)))
         logger.debug(text)
         self._write_string(frame, text)
@@ -74,11 +79,19 @@ class Overlays:
     def total_faces(self, frame, faces):
         text = "Total Faces Detected: {0}".format(faces)
         logger.debug(text)
-        self._write_string(frame, text)
+        second_num_line = 1
+        self._write_string(frame, text, second_num_line)
 
-    def _write_string(self, frame, text):
-        cv2.putText(frame, text, self._text_fg_origin, self._font, self._font_scale, self._text_bkg, 4, cv2.LINE_AA)
-        cv2.putText(frame, text, self._text_bg_origin, self._font, self._font_scale, self._text_fg, 1, cv2.LINE_AA)
+    def elapsed_time(self, frame, timestamp):
+        text = "Elapsed time[s] {0:.3f}".format(timestamp)
+        logger.debug(text)
+        first_num_line = 0
+        self._write_string(frame, text, first_num_line)
+
+    def _write_string(self, frame, text, num_line):
+        space_between_text = 20
+        cv2.putText(frame, text, (self._text_fg_origin[0], self._text_fg_origin[1]+space_between_text*num_line), self._font, self._font_scale, self._text_bkg, 4, cv2.LINE_AA)
+        cv2.putText(frame, text, (self._text_bg_origin[0], self._text_bg_origin[1]+space_between_text*num_line), self._font, self._font_scale, self._text_fg, 1, cv2.LINE_AA)
 
 class Screen:
     def __init__(self):
