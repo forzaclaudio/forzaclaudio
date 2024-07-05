@@ -5,7 +5,7 @@ from nano_vision import Screen, Video
 
 logger = logging.getLogger(__name__)
 
-def image_capture(video_path=None):
+def capture_image(video_path=None):
     """
     Capture an image from the given source.
     """
