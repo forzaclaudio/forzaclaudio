@@ -1,6 +1,5 @@
 import cv2
 import logging
-from pathlib import Path
 
 from nano_vision import Screen, Video
 
@@ -12,8 +11,8 @@ def image_capture(video_path=None):
     """
     video = Video(video_path)
     res_code = video.resolution_code()
-    # screen = Screen()
-    # screen.set_resolution(res_code)
+    screen = Screen()
+    screen.set_resolution(res_code)
     if video.path:
         cap = cv2.VideoCapture(str(video.path.absolute()))
     else:
@@ -22,9 +21,6 @@ def image_capture(video_path=None):
     if not (cap.isOpened()):
         logger.error("Could not open video device e.g. /dev/video0")
         exit(1)
-
-    # cap.set(cv2.CAP_PROP_FRAME_WIDTH, screen.width)
-    # cap.set(cv2.CAP_PROP_FRAME_HEIGHT, screen.height)
 
     while(cap.isOpened()):
         ret, frame = cap.read()
