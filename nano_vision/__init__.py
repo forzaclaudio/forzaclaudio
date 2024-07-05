@@ -21,3 +21,4 @@ from .display import Overlays
 from .display import Screen
 from .machine_learning import read_face_data
 from .input import Video
+from .cli import commands

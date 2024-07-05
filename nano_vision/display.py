@@ -18,13 +18,28 @@ class Overlays:
         self._line_thickness = 2
     
     def roi(self, frame, top, right, bottom, left, color, text=None):
+        """
+        Add a rectangle and label it with the given text.
+        """
         cv2.rectangle(frame, (right, top), (left, bottom), color, self._line_thickness)
         if not text:
             return
         cv2.putText(frame, text, (left, top - 6), self._font, self._font_scale, RGB_WHITE, self._line_thickness)
 
     def mask(self, frame, top, right, bottom, left,  color):
+        """
+        Add a rectangle to the provided frame.
+        """
         cv2.rectangle(frame, (right, top), (left, bottom), color, cv2.FILLED)
+
+    def add_video(self, frame, video_to_add):
+        """
+        Add image to the current frame.
+        """
+        tempImg = frame.copy()
+        tempImg [0:video_to_add.shape[0], 0:video_to_add.shape[1]] = video_to_add
+        return tempImg
+
 
     def blend(self, img_1, img_2):
         """

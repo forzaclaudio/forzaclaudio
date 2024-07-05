@@ -19,7 +19,12 @@ to install for development do the following:
 ```
 pip install . -e
 ```
+## Tests and Coverage
+To run tests and obtain current coverage run the following:
 
+```bash
+$ pytest --cov=nano_vision
+```
 
 ## Links and references
 - https://hizzely.hashnode.dev/instalasi-droidcam-cli-di-jetson-nano
@@ -33,3 +38,5 @@ pip install . -e
 - https://developer.ridgerun.com/wiki/index.php/How_to_Capture_Frames_from_Camera_with_OpenCV_in_Python
 
 - https://github.com/miooochi/face_recognizer
+
+- https://docs.opencv.org/4.x/da/d6e/tutorial_py_geometric_transformations.html

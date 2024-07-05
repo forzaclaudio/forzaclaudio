@@ -13,7 +13,7 @@ def face_detector(trained_datapath):
     """Detects the faces stored in the trained data file."""
     overlays = Overlays()
     Names, Encodings = read_face_data(trained_datapath)
-    scale = 0.5
+    scale = 0.8
     inputImage = face_recognition.load_image_file(sys.argv[1])
     inputImage = cv2.resize(inputImage, (0, 0), fx=scale, fy=scale)
     facePositions = face_recognition.face_locations(inputImage)
