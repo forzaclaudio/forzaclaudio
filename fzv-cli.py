@@ -11,7 +11,7 @@ def cli():
 @cli.command()
 @click.option('--source', help='Path to a video source. If empty, a live feed will be used.')
 def capture_image(source):
-    """Captures image from video or stream."""
+    """View video or stream and save image upon quiting."""
     click.echo("Press q to stop playing and save the current image")
     try:
         commands.capture_image(source)
@@ -31,7 +31,7 @@ def extract_roi(source, save_last_frame):
 @click.option('--no_elapsed_time', default=False, help='Indicates that no elapsed time is added to the captured video.')
 @click.option('--file-prefix', help='Prefix the saved filename with it.')
 def capture_video(no_elapsed_time, file_prefix):
-    """Capture video from stream."""
+    """View and capture video from stream."""
     click.echo("Press q to quit and save the current video.")
     commands.capture_video(no_elapsed_time=no_elapsed_time, file_prefix=file_prefix)
 
