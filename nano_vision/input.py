@@ -1,11 +1,14 @@
-import cv2
-import re
 import logging
+import re
 import subprocess
-
+import time
+from tqdm import tqdm
 from pathlib import Path
 
+import cv2
+
 logger = logging.getLogger(__name__)
+
 
 class Video:
     def __init__(self, src_path=None):
@@ -13,7 +16,42 @@ class Video:
         self._path = self._validated_path(src_path)
         self._play = True
         self._save_last_frame = False
-    
+        self._start_time = 0.0
+        self._frames_to_encode = []
+        self._ts_frames = []
+
+    def current_timestamp(self):
+        """
+        Return the current timestamp.
+        """
+        return time.perf_counter() - self._start_time
+
+    def add_frame(self, frame):
+        """
+        Add the given frame to the list of frames to encode.
+        """
+        self._frames_to_encode.append(frame)
+        self._ts_frames.append(self.current_timestamp())
+
+    def init_timer(self):
+        """Initializer a timer to time stamp frames."""
+        self._start_time = time.perf_counter()
+
+    @property
+    def start_time(self):
+        """Retrieve the start time."""
+        return self._start_time
+
+    @property
+    def ts_frames(self):
+        """Retrieve the list of timestamps of each frame."""
+        return self._ts_frames
+
+    @property
+    def frames_to_encode(self):
+        """Retrieve the frames to encode."""
+        return self._frames_to_encode
+
     @property
     def save_last_frame(self):
         """
@@ -47,6 +85,7 @@ class Video:
         Return playing status.
         """
         return self._play
+
     @property
     def path(self):
         """
@@ -75,7 +114,11 @@ class Video:
         """
         if not self._path:
             try:
-                proc = subprocess.Popen(["v4l2-ctl", "--all"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                proc = subprocess.Popen(
+                    ["v4l2-ctl", "--all"],
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                )
             except FileNotFoundError as e:
                 logger.error(str(e))
             try:
@@ -116,36 +159,43 @@ class Video:
             return 6
         return 0
 
-    def setup_encoding(self, time_str, width, height, fps):
-        logger.debug("Received time string: {0} Width: {1} Height: {2}".format(
-            time_str, width, height)
+    def setup_encoding(self, filepath, width, height, fps):
+        logger.debug(
+            "Received time string: {0} Width: {1} Height: {2}".format(
+                filepath, width, height
+            )
         )
         fourcc = cv2.VideoWriter_fourcc(*"x264")
         out = cv2.VideoWriter(
-            "video-{0}x{1}-{2}.mp4".format(width, height, time_str),
-            fourcc, fps, (width, height))
+            filepath,
+            fourcc,
+            fps,
+            (width, height),
+        )
 
         return fourcc, out
-        
-    def save(self, screen, time_str, frames_to_encode, frame_ts, fps=None):
+
+    def save(self, screen, filepath, fps=None):
         """
         screen has the dimensions of the frame to save.
-        time_str will be used to name the video.
-        frames_to_encode is the list of frames to encode
-        frame_ts is the timestamp of the last processed frame
-        frame_ts is ignored is fps is defined!
+        filename is the name of the saved video.
         """
-        num_frames =  len(frames_to_encode)
+        num_frames = len(self._frames_to_encode)
         logger.info("Frames to encode: {0}".format(num_frames))
         if fps:
-            fourcc, out = self.setup_encoding(time_str, screen.width, screen.height, fps)
+            fourcc, out = self.setup_encoding(
+                filepath, screen.width, screen.height, fps
+            )
         else:
-            fps = num_frames/frame_ts
-            logger.debug("FPS: {0:.3f}", fps)
-            fourcc, out = self.setup_encoding(time_str, screen.width, screen.height, num_frames/frame_ts)
+            try:
+                fps = float(num_frames) / self._ts_frames[-1]
+            except Exception as e:
+                logger.error("Unable for compute fps for encoding due to: {0}".format(str(e)))
+                exit(1)
+            logger.debug("FPS: {0:.3f} [{1}/{2:0.3f}]".format(fps, num_frames, self._ts_frames[-1]))
+            fourcc, out = self.setup_encoding(filepath, screen.width, screen.height, fps)
         logger.info("Saving video...")
-        for i in range(num_frames):
-            logger.debug("Writing frame: {0}".format(i))
-            out.write(frames_to_encode[i])
+        for i in tqdm(range(num_frames), desc="Writing frames"):
+            out.write(self._frames_to_encode[i])
         logger.info("Done!")
         out.release()
