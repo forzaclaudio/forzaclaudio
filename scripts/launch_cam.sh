@@ -1,6 +1,21 @@
 #!/bin/bash
 
-IP=192.168.50.64
+if [ -z ${1} ] 
+then
+  IP=192.168.50.64
+else
+  echo "Using IP: "${1}
+  IP=${1}
+fi
 PORT=4747
 
-droidcam-cli $IP $PORT
+if [ -z ${2} ] 
+then
+  PORT=4747
+else
+  echo "Using port: "${2}
+  PORT=${1}
+fi
+
+
+droidcam-cli ${IP} ${PORT}
