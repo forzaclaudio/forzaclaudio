@@ -1,11 +1,17 @@
-import cv2
 import logging
+import os
+import pickle
 import time
+from pathlib import Path
 
-from nano_vision import Screen, Video, Overlays
+import cv2
+import face_recognition
+from nano_vision import Overlays, Screen, Video
 from nano_vision.utils import generate_filename
+from tqdm import tqdm
 
 logger = logging.getLogger(__name__)
+
 
 def _initialize(video_path):
     """
@@ -30,7 +36,7 @@ def _select_source(video):
         cap = cv2.VideoCapture(0)
     return cap
 
-def capture_image(video_path=None):
+def capture_image(video_path=None, save_as=None):
     """
     Capture an image from the given source.
     """
@@ -46,7 +52,10 @@ def capture_image(video_path=None):
             break
         cv2.imshow("Image to capture",frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
-            cv2.imwrite("outputImage-{0}x{1}.jpg".format(frame.shape[1], frame.shape[0]), frame)
+            if save_as:
+                cv2.imwrite(save_as, frame)
+            else:
+                cv2.imwrite("outputImage-{0}x{1}.jpg".format(frame.shape[1], frame.shape[0]), frame)
             break
 
     cap.release()
@@ -115,3 +124,30 @@ def capture_video(no_elapsed_time=False, file_prefix=None):
     video.save(screen, filepath)
     cap.release()
     cv2.destroyAllWindows()
+
+def learn_faces(training_dir="train", save_as="faces_data.pkl"):
+    """
+    Learn the faces from images in the given directory.
+    """
+    datafile = save_as
+    data_dir = Path(training_dir)
+    Names = []
+    Encodings = []
+    if data_dir.is_dir():
+        logger.info("Reading training data from: {0}".format(data_dir.absolute()))
+        for file in tqdm(data_dir.iterdir(), desc="Learning face"):
+            logger.debug("Processing file: {0}".format(file.absolute()))
+            suffix = file.suffix
+            logger.debug("File has {0} suffix".format(suffix))
+            if suffix == ".jpg" or suffix == ".jpeg":
+                person = face_recognition.load_image_file(file.absolute())
+                encoding = face_recognition.face_encodings(person)[0]
+                Encodings.append(encoding)
+                Names.append(file.with_suffix("").name)
+
+    with open(datafile,'wb') as f:
+        pickle.dump(Names,f)
+        pickle.dump(Encodings,f)
+        logger.info("")
+        f.close()
+

@@ -124,10 +124,18 @@ class Screen:
             self.height = 720
             return
         if new_resolution == 3:
-            self.width = 1280
+            self.width = 1224
             self.height = 720
             return
         if new_resolution == 4:
+            self.width = 1280
+            self.height = 720
+            return
+        if new_resolution == 5:
+            self.width = 1280
+            self.height = 960
+            return
+        if new_resolution == 6:
             self.width = 1920
             self.height = 1080
             return
